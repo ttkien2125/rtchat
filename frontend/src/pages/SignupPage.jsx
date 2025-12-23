@@ -56,7 +56,7 @@ function SignupPage() {
                     <div>
                       <label className="auth-input-label">Email</label>
                       <div className="relative">
-                        <UserIcon className="auth-input-icon" />
+                        <MailIcon className="auth-input-icon" />
                         <input type="email"
                           className="input"
                           placeholder="example@gmail.com"
@@ -70,7 +70,7 @@ function SignupPage() {
                     <div>
                       <label className="auth-input-label">Password</label>
                       <div className="relative">
-                        <UserIcon className="auth-input-icon" />
+                        <LockIcon className="auth-input-icon" />
                         <input type="password"
                           className="input"
                           placeholder="Enter password here"
