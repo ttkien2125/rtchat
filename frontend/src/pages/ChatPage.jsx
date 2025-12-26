@@ -6,7 +6,6 @@ import ContactsList from "../components/ContactsList";
 import GradientBorderContainer from "../components/GradientBorderContainer";
 import ProfileHeader from "../components/ProfileHeader";
 
-// import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 
 function ChatPage() {
@@ -15,7 +14,7 @@ function ChatPage() {
     return (
       <div className="relative w-full max-w-6xl h-[600px]">
         <GradientBorderContainer>
-          {/*Left widget*/}
+          {/* Left sidebar */}
           <div className="w-80 bg-slate-800/50 backdrop-blur-sm flex flex-col">
             <ProfileHeader />
             <ActiveTabSwitch />
@@ -29,7 +28,7 @@ function ChatPage() {
             </div>
           </div>
 
-          {/*Chat window*/}
+          {/* Chat window */}
           <div className="flex-1 flex flex-col bg-slate-900/50 backdrop-blur-sm">
             {
               selectedUser

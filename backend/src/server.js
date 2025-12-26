@@ -21,10 +21,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 
 if (ENV.NODE_ENV == "production") {
-    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+    const outputPath = path.join(__dirname, "../frontend/dist");
+    const htmlFilePath = path.join(outputPath, "index.html");
 
-    const filePath = path.join(__dirname, "../frontend/dist/index.html");
-    app.get("*", (req, res) => res.sendFile(filePath));
+    app.use(express.static(outputPath));
+    app.get("*", (_, res) => res.sendFile(htmlFilePath));
 }
 
 app.listen(PORT, () => {
