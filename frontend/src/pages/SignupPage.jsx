@@ -7,13 +7,13 @@ import GradientBorderContainer from "../components/GradientBorderContainer";
 import { useAuthStore } from "../store/useAuthStore";
 
 function SignupPage() {
-    const [formData, setFormData] = useState({
+    const [ formData, setFormData ] = useState({
         username: "",
         email: "",
         password: "",
     });
 
-    const {signup, isSigningUp} = useAuthStore();
+    const { signup, isSigningUp } = useAuthStore();
 
     const handleSubmit = (e) => {
         e.preventDefault();
