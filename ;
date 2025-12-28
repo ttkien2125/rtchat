@@ -1,0 +1,11 @@
+import { useChatStore } from "../store/useChatStore" ;
+
+function ChatContainer() {
+    const a = useChatStore();
+
+    return (
+      <div>ChatContainer</div>
+    );
+}
+
+export default ChatContainer;
