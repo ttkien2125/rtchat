@@ -62,11 +62,11 @@ export const messagesByUserID = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
     try {
-        const { text, image } = req.body;
+        const { text, image, audio, audioDuration } = req.body;
 
-        if (!text && !image) {
+        if (!text && !image && !audio) {
             return res.status(400)
-                .json({ message: "Text or image is required" });
+                .json({ message: "Text, image, or audio is required" });
         }
 
         const senderID = req.user._id;
@@ -89,11 +89,22 @@ export const sendMessage = async (req, res) => {
             imageURL = uploadResponse.secure_url;
         }
 
+        let audioURL;
+        if (audio) {
+            const uploadResponse = await cloudinary.uploader.upload(audio, {
+                resource_type: "video",
+                format: "mp3",
+            });
+            audioURL = uploadResponse.secure_url;
+        }
+
         const newMessage = new Message({
             senderID,
             receiverID,
             text,
             image: imageURL,
+            audio: audioURL,
+            audioDuration,
         });
 
         await newMessage.save();

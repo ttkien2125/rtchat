@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 
+import AudioPlayer from "./AudioPlayer";
+
 import { useAuthStore } from "../store/useAuthStore";
 
 function ChatHistory({ messages }) {
@@ -34,6 +36,12 @@ function ChatHistory({ messages }) {
                 {
                   message.image &&
                   <img src={message.image} className="rounded-lg h-48 object-cover" />
+                }
+                {
+                  message.audio &&
+                  <div className="my-2">
+                    <AudioPlayer audioURL={message.audio} duration={message.audioDuration}/>
+                  </div>
                 }
                 {message.text && <p className="mt-2">{message.text}</p>}
                 <p className="text-xs mt-1 opacity-75 flex items-center gap-1">

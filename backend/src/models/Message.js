@@ -19,6 +19,12 @@ const messageSchema = new mongoose.Schema({
     image: {
         type: String,
     },
+    audio: {
+        type: String,
+    },
+    audioDuration: {
+        type: Number,
+    },
 }, { timestamps: true });
 
 const Message = mongoose.model("Message", messageSchema);

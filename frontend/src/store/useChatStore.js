@@ -73,6 +73,7 @@ export const useChatStore = create((set, get) => ({
             receiverID: selectedUser._id,
             text: data.text,
             image: data.image,
+            audio: data.audio,
             createdAt: new Date().toISOString(),
             isOptimistic: true,
         };
