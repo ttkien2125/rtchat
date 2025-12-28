@@ -9,11 +9,26 @@ import MessageInput from "./MessageInput";
 import { useChatStore } from "../store/useChatStore";
 
 function ChatContainer() {
-    const { selectedUser, messages, getMessagesByUserID, isLoadingMessages } = useChatStore();
+    const {
+        selectedUser,
+        messages,
+        getMessagesByUserID,
+        isLoadingMessages,
+        subscribeToMessages,
+        unsubscribeFromMessages,
+    } = useChatStore();
 
     useEffect(() => {
         getMessagesByUserID(selectedUser._id);
-    }, [getMessagesByUserID, selectedUser]);
+        subscribeToMessages();
+
+        return () => unsubscribeFromMessages();
+    }, [
+        getMessagesByUserID,
+        selectedUser,
+        subscribeToMessages,
+        unsubscribeFromMessages
+    ]);
 
     return (
       <>
