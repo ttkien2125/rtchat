@@ -1,7 +1,17 @@
+import { useEffect, useRef } from "react";
+
 import { useAuthStore } from "../store/useAuthStore";
 
 function ChatHistory({ messages }) {
     const { authUser } = useAuthStore();
+
+    const messageEndRef = useRef(null);
+
+    useEffect(() => {
+        if (messageEndRef.current) {
+            messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
 
     return (
       <div className="max-w-3xl mx-auto space-y-6">
@@ -37,6 +47,7 @@ function ChatHistory({ messages }) {
             </div>
           ))
         }
+        <div ref={messageEndRef} />
       </div>
     );
 }
