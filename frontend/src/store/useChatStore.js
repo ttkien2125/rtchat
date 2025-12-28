@@ -6,22 +6,26 @@ import { useAuthStore } from "./useAuthStore";
 import { axiosInstance } from "../lib/axios";
 
 export const useChatStore = create((set, get) => ({
+    contacts: [],
+    chats: [],
+    messages: [],
+
+    isLoadingUsers: false,
+    isLoadingMessages: false,
+
     isSoundEnabled: JSON.parse(localStorage.getItem("isSoundEnabled")),
+    activeTab: "chats",
+    selectedUser: null,
+
     toggleSound: () => {
         const flag = !get().isSoundEnabled;
         localStorage.setItem("isSoundEnabled", flag);
         set({ isSoundEnabled: flag })
     },
 
-    activeTab: "chats",
     setActiveTab: (tab) => set({ activeTab: tab }),
-
-    selectedUser: null,
     setSelectedUser: (user) => set({ selectedUser: user }),
 
-    contacts: [],
-    chats: [],
-    isLoadingUsers: false,
     getAllContacts: async () => {
         set({ isLoadingUsers: true });
         try {
@@ -46,8 +50,6 @@ export const useChatStore = create((set, get) => ({
         }
     },
 
-    messages: [],
-    isLoadingMessages: false,
     getMessagesByUserID: async (userID) => {
         set({ isLoadingMessages: true });
         try {

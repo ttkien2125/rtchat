@@ -4,11 +4,12 @@ import express from "express";
 import path from "path";
 
 import ENV from "./lib/env.js";
-import authRoutes from "./routes/auth.route.js";
-import messageRoutes from "./routes/message.route.js";
+import { app, server } from "./lib/socket.js";
 import { connectDB } from "./lib/db.js";
 
-const app = express();
+import authRoutes from "./routes/auth.route.js";
+import messageRoutes from "./routes/message.route.js";
+
 const __dirname = path.resolve();
 
 const PORT = ENV.PORT || 3000;
@@ -28,7 +29,7 @@ if (ENV.NODE_ENV == "production") {
     app.get("*", (_, res) => res.sendFile(htmlFilePath));
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log("Server started on port:", PORT);
     connectDB();
 });
