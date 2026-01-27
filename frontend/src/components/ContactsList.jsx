@@ -30,7 +30,7 @@ function ContactsList() {
             value={searchQuery}
             onChange={setSearchQuery}
             onClear={() => setSearchQuery("")}
-            placeholder="Search chats..."
+            placeholder="Search contacts..."
           />
         </div>
         {

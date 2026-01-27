@@ -20,6 +20,7 @@ function ChatContainer() {
     } = useChatStore();
 
     const [searchQuery, setSearchQuery] = useState("");
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     useEffect(() => {
         getMessagesByUserID(selectedUser._id);
@@ -33,17 +34,33 @@ function ChatContainer() {
         unsubscribeFromMessages
     ]);
 
+    useEffect(() => {
+        setSearchQuery("");
+        setIsSearchOpen(false);
+    }, [selectedUser._id]);
+
     const filteredMessages = messages.filter(message => {
         if (!searchQuery) return true;
 
         return message.text.toLowerCase().includes(searchQuery.toLowerCase());
     });
 
+    const handleToggleSearch = () => {
+        setIsSearchOpen(!isSearchOpen);
+        if (isSearchOpen) {
+            setSearchQuery("");
+        }
+    };
+
     return (
       <>
-        <ChatHeader />
+        <ChatHeader
+          isSearchOpen={isSearchOpen}
+          onToggleSearch={handleToggleSearch}
+          hasMessages={messages.length > 0}
+        />
 
-        {messages.length > 0 && (
+        {isSearchOpen && messages.length > 0 && (
           <div className="px-6 pt-4 pb-2">
             <SearchBar
               value={searchQuery}
@@ -51,6 +68,11 @@ function ChatContainer() {
               onClear={() => setSearchQuery("")}
               placeholder="Search messages..."
             />
+            {searchQuery && (
+              <p className="text-xs text-slate-400 mt-2">
+                Found {filteredMessages.length} message{filteredMessages.length !== 1 ? 's' : ''}
+              </p>
+            )}
           </div>
         )}
 
@@ -59,19 +81,7 @@ function ChatContainer() {
             messages.length > 0 && !isLoadingMessages
               ? filteredMessages.length > 0
                 ? <ChatHistory messages={filteredMessages} searchQuery={searchQuery} />
-                : (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-center text-slate-400">
-                        <p>No messages found containing "{searchQuery}"</p>
-                        <button
-                          onClick={() => setSearchQuery("")}
-                          className="mt-2 text-cyan-500 hover:text-cyan-400 transition-colors"
-                        >
-                          Clear search
-                        </button>
-                      </div>
-                    </div>
-                )
+                : <p className="flex items-center justify-center h-full">No results found</p>
               : isLoadingMessages
                 ? <ChatMessagesLoading />
                 : <ChatHistoryPlaceholder name={selectedUser.username} />

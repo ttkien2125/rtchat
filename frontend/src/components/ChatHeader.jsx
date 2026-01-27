@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { XIcon } from "lucide-react";
+import { XIcon, Search } from "lucide-react";
 
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 
-function ChatHeader() {
+function ChatHeader({ isSearchOpen, onToggleSearch, hasMessages }) {
     const { onlineUsers } = useAuthStore();
     const { selectedUser, setSelectedUser } = useChatStore();
 
@@ -12,7 +12,11 @@ function ChatHeader() {
 
     const handleEscKey = (e) => {
         if (e.key === "Escape") {
-            setSelectedUser(null);
+            if (isSearchOpen) {
+                onToggleSearch();
+            } else {
+                setSelectedUser(null);
+            }
         }
     };
 
@@ -37,9 +41,30 @@ function ChatHeader() {
           </div>
         </div>
 
-        <button onClick={() => setSelectedUser(null)}>
-          <XIcon className="w-5 h-5 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"/>
-        </button>
+        <div className="flex items-center gap-3">
+          {
+            hasMessages && (
+              <button
+                onClick={onToggleSearch}
+                className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                  isSearchOpen
+                    ? "bg-cyan-500/20 text-cyan-400"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
+                }`}
+                title="Search messages"
+              >
+                <Search className="w-5 h-5"/>
+              </button>
+            )
+          }
+
+          <button
+            onClick={() => setSelectedUser(null)}
+            className="text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+          >
+            <XIcon className="w-5 h-5"/>
+          </button>
+        </div>
       </div>
     );
 }
