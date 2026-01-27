@@ -115,13 +115,10 @@ export const useChatStore = create((set, get) => ({
             const res = await axiosInstance.post(`/message/send/${userID}`, encryptedData);
 
             // Decrypt the response before adding to messages
-            let newMessage = res.data;
+            const newMessage = res.data;
             if (newMessage.encrypted && newMessage.text && newMessage.iv) {
                 const conversationKey = generateConversationKey(authUser._id, userID);
-                newMessage = {
-                    ...newMessage,
-                    text: decryptMessage(newMessage.text, conversationKey, newMessage.iv)
-                };
+                newMessage.text = decryptMessage(newMessage.text, conversationKey, newMessage.iv);
             }
 
             set({ messages: [ ...messages, newMessage ] });
@@ -133,12 +130,19 @@ export const useChatStore = create((set, get) => ({
 
     subscribeToMessages: () => {
         const { selectedUser, isSoundEnabled } = get();
+        const { authUser } = useAuthStore.getState();
+
         if (!selectedUser) return;
 
         const { socket } = useAuthStore.getState();
         socket.on("newMessage", newMessage => {
             const isCorrectUser = newMessage.senderID === selectedUser._id;
             if (!isCorrectUser) return;
+
+            if (newMessage.encrypted && newMessage.text && newMessage.iv) {
+                const conversationKey = generateConversationKey(authUser._id, selectedUser._id);
+                newMessage.text = decryptMessage(newMessage.text, conversationKey, newMessage.iv);
+            }
 
             const { messages } = get();
             set({ messages: [ ...messages, newMessage ]})
