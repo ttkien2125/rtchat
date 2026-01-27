@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "pnpm install --dir backend && pnpm install --dir frontend && pnpm run build --dir frontend",
-    "start": "pnpm run start --dir backend"
+    "build": "pnpm --dir backend install && pnpm --dir frontend install && pnpm --dir frontend run build",
+    "start": "pnpm --dir backend run start"
   },
   "keywords": [],
   "author": "",
