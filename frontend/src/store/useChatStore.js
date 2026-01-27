@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { useAuthStore } from "./useAuthStore";
 
 import { axiosInstance } from "../lib/axios";
+import { encryptMessage, decryptMessage, generateConversationKey } from "../lib/encryption";
 
 export const useChatStore = create((set, get) => ({
     contacts: [],
@@ -51,10 +52,25 @@ export const useChatStore = create((set, get) => ({
     },
 
     getMessagesByUserID: async (userID) => {
+        const { authUser } = useAuthStore.getState();
+
         set({ isLoadingMessages: true });
         try {
             const res = await axiosInstance.get(`/message/${userID}`);
-            set({ messages: res.data });
+
+            const conversationKey = generateConversationKey(authUser._id, userID);
+            const decryptedMessages = res.data.map(message => {
+                if (message.encrypted && message.text && message.iv) {
+                    return {
+                        ...message,
+                        text: decryptMessage(message.text, conversationKey, message.iv),
+                    };
+                }
+
+                return message;
+            })
+
+            set({ messages: decryptedMessages });
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
         } finally {
@@ -81,8 +97,34 @@ export const useChatStore = create((set, get) => ({
 
         try {
             const userID = selectedUser._id;
-            const res = await axiosInstance.post(`/message/send/${userID}`, data);
-            set({ messages: [ ...messages, res.data ] });
+
+            let encryptedData = { ...data };
+
+            if (data.text) {
+                const conversationKey = generateConversationKey(authUser._id, userID);
+                const { encrypted, iv } = encryptMessage(data.text, conversationKey);
+
+                encryptedData = {
+                    ...data,
+                    text: encrypted,
+                    encrypted: true,
+                    iv,
+                };
+            }
+
+            const res = await axiosInstance.post(`/message/send/${userID}`, encryptedData);
+
+            // Decrypt the response before adding to messages
+            let newMessage = res.data;
+            if (newMessage.encrypted && newMessage.text && newMessage.iv) {
+                const conversationKey = generateConversationKey(authUser._id, userID);
+                newMessage = {
+                    ...newMessage,
+                    text: decryptMessage(newMessage.text, conversationKey, newMessage.iv)
+                };
+            }
+
+            set({ messages: [ ...messages, newMessage ] });
         } catch (error) {
             set({ messages: messages });
             toast.error(error.response?.data?.message || "Something went wrong");

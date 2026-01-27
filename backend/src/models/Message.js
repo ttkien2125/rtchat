@@ -14,7 +14,7 @@ const messageSchema = new mongoose.Schema({
     text: {
         type: String,
         trim: true,
-        maxlength: 2000,
+        maxlength: 5000,
     },
     image: {
         type: String,
@@ -24,6 +24,13 @@ const messageSchema = new mongoose.Schema({
     },
     audioDuration: {
         type: Number,
+    },
+    encrypted: {
+        type: Boolean,
+        default: true,
+    },
+    iv: {
+        type: String,
     },
 }, { timestamps: true });
 

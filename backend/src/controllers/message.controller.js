@@ -62,7 +62,7 @@ export const messagesByUserID = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
     try {
-        const { text, image, audio, audioDuration } = req.body;
+        const { text, image, audio, audioDuration, encrypted, iv } = req.body;
 
         if (!text && !image && !audio) {
             return res.status(400)
@@ -105,6 +105,8 @@ export const sendMessage = async (req, res) => {
             image: imageURL,
             audio: audioURL,
             audioDuration,
+            encrypted: encrypted !== undefined ? encrypted : true,
+            iv, // Store initialization vector for decryption
         });
 
         await newMessage.save();
